@@ -6,7 +6,7 @@ sys.path.append(r'C:\Movie Night Planner App')
 
 from models.users import User
 from models.movie import Movie
-from models.vote_manager import Vote_manager
+# from models.vote_manager import Vote_manager
 
 #adding users to json file
 
@@ -66,3 +66,21 @@ def add_movie_to_json(movie, file_path= r'C:\Movie Night Planner App\data\movies
 
         with open(file_path, 'w') as mf:
             json.dump(movies, mf, indent=4)
+
+
+def add_vote(movie, file_path =r'C:\Movie Night Planner App\data\movies.json'):
+    movies = []
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r') as f:
+                movies = json.load(f)
+        except json.JSONDecodeError:
+            movies = []
+
+    for entry in movies:
+        if entry['title'].lower() == movie.title.lower():
+            entry['vote'] = entry.get('vote', 0)+1
+        break
+
+    with open(file_path, "w") as f:
+        json.dump(movies, f, indent=4)

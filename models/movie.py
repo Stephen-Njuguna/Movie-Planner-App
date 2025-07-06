@@ -5,7 +5,6 @@ class Movie:
         self.title = title
         self.release_date = release_date
         self.genre = genre
-        self.movies = []
         self.vote = vote
      
     def up_vote(self):
