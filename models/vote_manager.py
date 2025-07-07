@@ -2,12 +2,31 @@
 from .users import User
 from .movie import Movie
 from utils.file_handler import add_user_to_json, add_movie_to_json, add_vote
+import json
+import os
 
 
 class Vote_manager:
     def __init__(self):
         self.users = []
-        self.movies = []
+        self.movies = self.load_movies()
+
+    def load_movies(self, MOVIE_FILE = r'C:\Movie Night Planner App\data\movies.json'):
+        movies = []
+        if os.path.exists(MOVIE_FILE):
+            try:
+                with open(MOVIE_FILE, 'r') as f:
+                    data = json.load(f)
+                    for entry in data:
+                        movies.append(Movie(
+                            entry['title'],
+                            entry['release_date'],
+                            entry['genre'],
+                            vote=entry.get('vote', 0)
+                        ))
+            except json.JSONDecodeError:
+                print("Error reading movies.json")
+        return movies
 
     def add_movie(self, movie):
         if not any(entry.title.lower() == movie.title.lower() for entry in self.movies):
@@ -29,7 +48,7 @@ class Vote_manager:
 
     def show_winner(self):
         winner = max(self.movies, key= lambda m: m.vote)
-        print(f'🎉🎉🎉🎉\n Top voted movies is{winner.title} with {winner.vote} votes')
+        print(f'🎉🎉🎉🎉\nTop voted movies is {winner.title} with {winner.vote} votes')
 
 
     def vote_movie(self, movie):
